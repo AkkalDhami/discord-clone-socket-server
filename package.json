@@ -12,7 +12,8 @@
     "lint:fix": "eslint . --fix",
     "format:check": "npx prettier . --check",
     "format:fix": "npx prettier . --write",
-    "docs": "npx tsx swagger.config.ts"
+    "docs": "npx tsx swagger.config.ts",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "src/**/*.ts": [
