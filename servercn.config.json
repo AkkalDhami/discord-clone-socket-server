@@ -1,0 +1,11 @@
+{
+  "$schema": "https://servercn.vercel.app/schema/servercn.config.json",
+  "version": "2.0.3",
+  "rootDir": ".",
+  "packageManager": "npm",
+  "runtime": "node",
+  "language": "typescript",
+  "framework": "express",
+  "architecture": "mvc",
+  "database": null
+}
