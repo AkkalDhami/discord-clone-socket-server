@@ -18,7 +18,8 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: env.CORS_ORIGIN
+    origin: env.CORS_ORIGIN || "http://localhost:3000",
+    credentials: true
   }
 });
 

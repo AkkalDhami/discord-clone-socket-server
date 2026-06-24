@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
-import "dotenv/config";
+import DotenvFlow from "dotenv-flow";
+DotenvFlow.config();
+
 import { z } from "zod";
 
 export const envSchema = z.object({

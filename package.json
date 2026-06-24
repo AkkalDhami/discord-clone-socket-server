@@ -13,7 +13,7 @@
     "format:check": "npx prettier . --check",
     "format:fix": "npx prettier . --write",
     "docs": "npx tsx swagger.config.ts",
-    "prepare": "husky install"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi"
   },
   "lint-staged": {
     "src/**/*.ts": [
