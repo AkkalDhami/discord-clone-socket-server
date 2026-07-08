@@ -53,6 +53,16 @@ export function setupSocket(io: Server) {
       socket.leave(`conversation:${conversationId}`);
     });
 
+    socket.on("channel:join", channelId => {
+      if (!channelId) return;
+
+      socket.join(`channel:${channelId}`);
+    });
+
+    socket.on("channel:leave", channelId => {
+      socket.leave(`channel:${channelId}`);
+    });
+
     socket.on("typing:start", (payload: TypingUser) => {
       const safePayload = {
         conversationId: payload.conversationId,
@@ -78,21 +88,38 @@ export function setupSocket(io: Server) {
 
     socket.on(
       "message:send",
-      (payload: { conversationId: string; message: MessageType }) => {
-        if (!payload?.conversationId) return;
+      (payload: {
+        conversationId?: string;
+        channelId?: string;
+        message: MessageType;
+      }) => {
+        let roomKey: string | undefined;
+
+        if (payload.conversationId) {
+          roomKey = `conversation:${payload.conversationId}`;
+        } else if (payload.channelId) {
+          roomKey = `channel:${payload.channelId}`;
+        }
+
+        if (!roomKey) return;
 
         console.log("message:send", payload);
 
-        socket
-          .to(`conversation:${payload.conversationId}`)
-          .emit("message:new", payload.message);
+        socket.to(roomKey).emit("message:new", payload.message);
       }
     );
 
     socket.on("disconnect", () => {
-      io.emit("typing:stop", {
-        userId
-      });
+      for (const room of socket.rooms) {
+        if (!room.startsWith("conversation:")) continue;
+
+        const conversationId = room.replace("conversation:", "");
+
+        socket.to(room).emit("typing:stop", {
+          conversationId,
+          userId
+        });
+      }
 
       const userSockets = onlineUsers.get(userId);
 
