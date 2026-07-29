@@ -29,9 +29,15 @@ export function setupSocket(io: Server) {
   io.on("connection", socket => {
     const userId = socket.handshake.query.userId as string;
 
-    if (!userId) return;
+    if (!userId) {
+      socket.disconnect(true);
+      return;
+    }
 
-    console.log("socket connected", socket.id);
+    console.log("socket connected", {
+      socketId: socket.id,
+      userId
+    });
 
     if (!onlineUsers.has(userId)) {
       onlineUsers.set(userId, new Set());
@@ -39,7 +45,23 @@ export function setupSocket(io: Server) {
 
     onlineUsers.get(userId)?.add(socket.id);
 
+    //* broadcast online users to all users
     io.emit("users:online", [...onlineUsers.keys()]);
+
+    //* join personal room
+    // socket.join(`user:${userId}`);
+
+    // socket.on(
+    //   "chat:join",
+    //   async (chatId: string, callback?: (error?: string) => void) => {
+    //     try {
+    //       socket.join(`chat:${chatId}`);
+    //       callback?.();
+    //     } catch (error) {
+    //       callback?.(error as string);
+    //     }
+    //   }
+    // );
 
     socket.on("conversation:join", conversationId => {
       if (!conversationId) return;

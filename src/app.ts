@@ -23,6 +23,26 @@ const io = new Server(server, {
   }
 });
 
+// io.use(async (socket, next) => {
+//   try {
+//     const rawCookie = socket.request.headers.cookie;
+
+//     if (!rawCookie) {
+//       return next(new Error("Unauthorized"));
+//     }
+
+//     const token = rawCookie.split("=")[1];
+
+//     if (!token) {
+//       return next(new Error("Unauthorized"));
+//     }
+
+//     socket.data.token = token;
+//   } catch (error) {
+//     return next(new Error("Unauthorized"));
+//   }
+// });
+
 setupSocket(io);
 
 app.use(express.json());
